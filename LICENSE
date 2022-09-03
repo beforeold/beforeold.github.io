@@ -188,7 +188,7 @@
 
    Copyright 2015-2016 Huxpro
 
-       https://github.com/Huxpro/
+       https://github.com/beforeold/
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -204,9 +204,9 @@
 
 
 =======================================================================
-Hux Blog Subcomponents:
+Blog Subcomponents:
 
-The Hux Blog project contains subcomponents with separate copyright
+The Blog project contains subcomponents with separate copyright
 notices and license terms. Your use of the source code for the these
 subcomponents is subject to the terms and conditions of the following
 licenses.
