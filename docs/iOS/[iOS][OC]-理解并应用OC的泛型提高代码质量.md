@@ -1,3 +1,16 @@
+---
+layout:       post
+title:        "理解并应用 OC 的泛型提高代码质量"
+author:       "beforeold"
+header-style: text
+catalog:      true
+tags:
+    - Objective-C
+    - Generics
+---
+
+
+
 ### 理解泛型 ```Generics```
 从 ```Xcode``` 7 以后 ```Objective-C```（后称```OC```） 支持了泛型 ```Generics``` 的使用，相对 ```Swift``` 而言，```OC``` 的泛型要轻量级得多。```OC``` 的泛型的几点理解：
 - 泛型用于指代一种类型，在 ```OC``` 中声明了泛型后至少是 id 类型
