@@ -18,22 +18,16 @@ tags:
 # 情况 2： 有一些 pod 的版本号是字符串版本（pre-release）
 如果有一些间接引入的 pod 版本为字符串版本，比如 ```2.3-SNAPSHOT```，或者 ```1.0-rc.2```，此时 pod install 日志会有以下错误信息。
 
-```Plain Text
-  In snapshot (Podfile.lock):
-    TTTracker (= 1.1.11-rc.0, ~> 1.1.1)
+>
+>  In snapshot (Podfile.lock):
+>     TTTracker (= 1.1.11-rc.0, ~> 1.1.1)
+> In Podfile:
+>    TTPushSDK (from `git url`, commit `575fad426b1e7581458991f529fe42e81095c297`) was resolved to 0.1.3, which depends on TTTracker
+> There are only pre-release versions available satisfying the following requirements:
+> 'TTTracker', '= 1.1.11-rc.0, ~> 1.1.1'
+> 'TTTracker', '>= 0'
+> You should explicitly specify the version in order to install a pre-release version
 
-  In Podfile:
-    TTPushSDK (from `git url`, commit `575fad426b1e7581458991f529fe42e81095c297`) was resolved to 0.1.3, which depends on
-      TTTracker
-
-There are only pre-release versions available satisfying the following requirements:
-
-	'TTTracker', '= 1.1.11-rc.0, ~> 1.1.1'
-
-	'TTTracker', '>= 0'
-
-You should explicitly specify the version in order to install a pre-release version
-```
 
 比如这个 [CocoaPods GitHub Issue](https://github.com/CocoaPods/CocoaPods/issues/8216) 中提到的例子，其实是某个 pod A 的名称不是正式版，而有另外两个 pod B 和 C 间接依赖了 pod A 导致的，这种情况有两种方案。
 1、执行 pod update，这种会忽略 pre-release 版本的冲突，pod update 有带入其他 pod 变更的风险，建议下面的方案二

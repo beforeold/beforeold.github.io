@@ -188,7 +188,8 @@ tags:
 
 #### 4.2 支持自动布局```AutoLayout```和固定行高
 自 iOS8 后 UITableView 支持高度自适应，通过在 GSFormVC 内对 TableView 进行自动布局的设置后，再在各个 Cell 实现各自的布局方案，表单的布局思路可以兼容固定行高和自动布局，TableView 的配置:
-```
+
+```Objective-C
 - (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
