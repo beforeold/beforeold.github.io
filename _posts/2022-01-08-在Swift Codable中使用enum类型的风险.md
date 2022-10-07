@@ -13,15 +13,18 @@ tags:
 # 背景
 枚举（enum）类型因其良好地表达对象不同的情况（case），是开发中的常用类型。
 例如：
+
 ```Swift
 enum OrderState: Int {
-    case new = 1
-    case payed = 2
-    case done = 3
+    case new = 1
+    case payed = 2
+    case done = 3
 
 }
 ```
+
 对于原始值为 Int 类型的 enum 类型，编译器可为其自动合成 Codable 实现。
+
 ```Swift
 extension OrderState: Codable { }
 
@@ -30,9 +33,11 @@ struct Order: Codable {
     let state: OrderState
 }
 ```
+
 不难猜到，一个 enum 类型的 codable 的模拟实现过程：
 - 将是将 value 解码为 Int
 - 尝试将 Int 构造为 enum 类型
+
 ```Swift
 extension OrderState: Codable {
     init(from decoder: Decoder) throws {
@@ -48,6 +53,7 @@ extension OrderState: Codable {
 
 # 解决方案：使用 struct 替代
 enum 的原始值支持 codable 的原因是其遵循了 RawReresentable 协议，在 Codable 中提供了默认实现：
+
 ```Swift
 extension RawRepresentable where Self : Decodable, Self.RawValue == Int {
 
@@ -61,11 +67,13 @@ extension RawRepresentable where Self : Decodable, Self.RawValue == Int {
     public init(from decoder: Decoder) throws
 }
 ```
+
 借助这样的实现，可以用使用 struct 遵循 RawReprentable，可以获得：
 - 可以规避 case 失败的问题，支持任意 int 下发
 - 通过补充静态属性代替具体的 case 声明
 例如：
-```
+
+```Swift
 struct OrderStateStruct: RawRepresentable, Codable {
     let rawValue: Int
     
@@ -80,6 +88,7 @@ Swift 的强类型特性设计在 Codable 中突出的体现，在设计参数�
 - 类似的方案，也可用于原始值为 string 类型的枚举场景
 - 使用 struct 的方式，在 swift 可以继续保留 swift case 的支持，不同的是会有 default case 的存在，因为不是可穷举的，这在未来新增 case 时，需要在用到该枚举的地方逐个查找并补充，相对 enum 类型没有编译器的支持，权衡得失，问题不会太大。 
 - 如果坚持使用 enum，那么就需要考虑到 decode 失败的兜底处理，可以从自定义实现 Decodable 等角度去思考和拓展，例如评论中有同学提到的，将不符合 1、2、3 的 case 统一设置为 case unkown = 4 进行处理。
+
 ```Swfit
 /// 新增兜底 case
 case unkown = 4

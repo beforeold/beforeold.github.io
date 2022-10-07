@@ -101,7 +101,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
 - 第一步，设置获取客服信息的逻辑，通过```ContactHelper```的声明为 ```fetcher```的```block```属性保存，当需要时进行调用
 
-```
+```Objective-C
 typedef void(^ContactCompletion)(NSDictionary *userInfo, NSString *errorMsg); // 
 
 - (void)configCustomerPhoneFetcher:(void (^)(ContactCompletion completion, UIViewController *vc))fetcher;
@@ -121,6 +121,7 @@ ContactHelper *helper = [ContactHelper sharedInstance];
     completion(@{kContactPhoneKey:tel,nil);
 }];
 ```
+
 - 第二步，当业务方调用```ContactHelper```以弹窗拨打客服电话时，```ContactHelper```调用**第一步**配置好的获取方式 ```fetcher```属性。
 - 第三步，利用```fetcher```获取到并再调用的信息进行弹窗拨号提示，因此```ContactHelper```内部实现调用客服电话后再弹窗提醒如下：
 

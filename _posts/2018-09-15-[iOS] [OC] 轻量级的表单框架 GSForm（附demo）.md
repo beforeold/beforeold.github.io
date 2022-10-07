@@ -86,6 +86,7 @@ tags:
     return cell;
 }
 ```
+
 - 一个分组可以包含多个 GSRow 对象，在表单中对分组的头尾部视图并没有高度定制和复杂的事件回调，因此暂不做高度封装，主要提供作为 Row 的容器以及整体隐藏使用，即GSSection。
 
 ```Objective-C
@@ -130,6 +131,7 @@ tags:
 
 @end
 ```
+
 为了承载和实现 UITableView 的协议，将 UITabeView 作为控制器的子视图，设为 GSFormVC，GSFormVC 同时是 UITableView 的数据源dataSource 和代理 delegate，负责将 UITableView 的重要协议方法分发给 GSRow 和 GSSection，以及黑白名单控制，如此，具体的业务场景下，通过继承 GSFormVC 配置 GSForm 的结构，即可实现主体功能，对于分组section的头尾视图等可以通过在具体业务子类中实现 UITableView 的方式来实现即可。
 
 ### 4.具体功能点的实现
@@ -143,10 +145,10 @@ tags:
 
 ```
 接着配置 cell 的具体类型，cellClass 或者 nibName 属性
+
 ```Objective-C
 @property (nonatomic, strong) Class cellClass;
 @property (nonatomic, strong) NSString *nibName;
-
 ```
 
 为了在 cell 初始化后可以进行额外的子视图构造或者样式配置，设置 GSRow 的 cellExtraInitBlock，将在 首次构造 cell 时进行额外调用，属性的声明：
@@ -158,6 +160,7 @@ tags:
 ```
 
 下面是构造 cell 的处理
+
 ```Objective-C
     GSRow *row = [self.form rowAtIndexPath:indexPath];
     
@@ -173,6 +176,7 @@ tags:
     }
 
 ```
+
 获取到构造的可用的cell 后需要利用数据模型对 cell 的内容进行填入处理，这个操作通过配置```rowConfigBlock``` 或者 ```rowConfigBlockWithCompletion``` 属性完成，这两个属性只会调用其中一个，后者的区别时会在配置完成后返回一个 block 变量用于进行最终配置，属性的声明如下：
 
 ```Objective-C
@@ -199,13 +203,16 @@ tags:
     return _tableView;
 }
 ```
+
 对应地，GSRow 的 rowHeight 属性可以实现 cell高度的固定，如果不传值则默认为自动布局，属性的声明:
 
 ```Objective-C
 @property (nonatomic, assign) CGFloat rowHeight;
 ```
+
 进而在 TableView 的代理中实现 cell 的高度布局，如下：
-```
+
+```Objective-C
 - (CGFloat)tableView:(UITableView *)tableView
         heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     GSRow *row = [self.form rowAtIndexPath:indexPath];
@@ -213,12 +220,14 @@ tags:
     return row.rowHeight == 0 ? UITableViewAutomaticDimension : row.rowHeight;
 }
 ```
+
 #### 4.3 表单每行row数据和事件整合为一个model，基本只需管理row
 为了方便行数据的存储，设置了专门用于存值的属性，根据实际的需要进行赋值和取值即可，声明如下：
 
 ```Objective-C
 @property (nonatomic, strong) id value;
 ```
+
 在实际的应用中，value 使用可变字典的场景居多，如果内部有特定的自定义类对象，可以用一个key值保存在可变字典value中，方便存取，value 作为可变字典使用时有极大的自由便利性，可以在其中保存有规律的信息，比如表单cell 左侧的 title，右侧的内容等等，因为 block 可以时分便利地捕获上下对象，而且 GSForm 的设计实现时一个 GSRow 的几乎所有信息都在一个代码块内实现，从而实现上下文的共享，在上一个block存值时的key，可以在下一个block方便地得知用于取值和设值，比如一个 GSRow 的配置：
 
 ```Objective-C
@@ -258,7 +267,9 @@ tags:
   return row;
 }
 ```
+
 对于需要在点击 row 时跳转二级页面的情况，通过配置 GSRow 的 ```didSelectBlock``` 来实现，声明及示例如下：
+
 ```Objective-C
 @property (nonatomic, copy) void(^didSelectCellBlock)(NSIndexPath *indexPath, id value, id cell); 
 // didSelectRow with Cell
@@ -274,6 +285,7 @@ tags:
         [strongSelf.navigationController pushViewController:ctl animated:YES];
     };
 ```
+
 通过对该属性的配置，在 TableView 的代理方法 tableView:didSelectRowAtIndexPath: 来调用：
 
 ```Objective-C
@@ -286,8 +298,8 @@ tags:
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     !row.didSelectCellBlock ?: row.didSelectCellBlock(indexPath, row.value, cell);
 }
-
 ```
+
 综上，通过多个属性的配合使用，基本达成了 cell 的构造、配置和 cell内部事件以及 cell 整体点击事件的整合。
 
 #### 4.4 积木式组合 row，支持 section 和 row 的隐藏，易于维护
@@ -303,10 +315,13 @@ tags:
     [self.form addSection:[self sectionOtherInfo]];
 }
 ```
+
 此外，GSSection/GSRow 都支持隐藏，根据不同的场景设置 GSSection/GSRow 的隐藏状态，可以动态设置表单。
+
 ```Objective-C
 @property (nonatomic, assign, getter=isHidden) BOOL hidden;
 ```
+
 隐藏属性将通过 UITableView 的数据源 dataSource 协议方法决定是否显示 section/row:
 
 ```Objective-C
@@ -328,8 +343,8 @@ tags:
     
     return count;
 }
-
 ```
+
 也正是因为GSSection/GSRow 的隐藏特点，根据 indexPath 取值时不能单方面地根据索引从数组中取值，也应考虑到是否有隐藏的对象，为此在 GSForm 定义了两个工具方法，用于关联 indexPath 与 GSRow 对象，在必要时调用。
 
 ```Objective-C
@@ -338,13 +353,14 @@ tags:
 /// 根据 row 返回 indexPath
 - (NSIndexPath *)indexPathOfGSRow:(GSRow *)row;
 ```
+
 通过这些可组合性，可以便利地搭建页面，且易于增删或者调整顺序。
 
 #### 4.5 支持传入外部数据
 有些编辑类型的表单，首次加载时通过其他渠道加载数据后先填入一部分值，为此，GSRow 设计了从外部取值的属性 reformRespRetBlock，而外部参数经由 GSForm 进行遍历调用。
 
 ```Objective-C
-///GSForm
+/// GSForm
 /// 传入外部数据
 - (void)reformRespRet:(id)resp;
 - (void)reformRespRet:(id)resp {
@@ -358,10 +374,10 @@ tags:
 @property (nonatomic, copy) void(^reformRespRetBlock)(id ret, id value);    
  // 外部传值处理
 ```
+
 如此，通过网络请求的数据返回后调用 GSForm 将数据分发到 GSRow 存入到各自的 value 后，刷新 TableView 即可实现外部数据的导入，比如网络请求后调用构建页面各个 GSRow 并 传入外部数据:
 
 ```Objective-C
-
 SomeHTTPModel *result; // 网络请求成功返回值
 self.result = result;
 [self buildForm];
@@ -372,11 +388,14 @@ self.result = result;
 #### 4.6 支持快速提取数据
 对应地，当数据录入完成后，点击提交时，需要获取各行数据进行网络请求，此时根据业务场景各自通过，通过每个 GSRow 配置各自的请求参数即可，声明配置请求参数的属性 httpParamConfigBlock，以从表单中提取一个字典参数为例：
 声明:
+
 ```Objective-C
 @property (nonatomic, copy) id(^httpParamConfigBlock)(id value); 
 // get param for http request
 ```
+
 从表单中获取请求参数:
+
 ```Objective-C
 /// 获取当前请求参数
 - (NSMutableDictionary *)fetchCurrentRequestInfo {
@@ -399,8 +418,8 @@ self.result = result;
     }
     return dic;
 }
-
 ```
+
 #### 4.7 支持参数的最终合法性校验
 一般地，对用户输入的参数在提交前需要进行合法性校验，对于较长的表单而言通常是点击提交按钮时进行，对参数的最终合法性进行逐个校验，当参数不合法时进行提醒，将合法性校验的要求声明为 GSRow 的属性进行处理，如下：
 
@@ -418,6 +437,7 @@ self.result = result;
         return rowOK(); // 返回一个 key 为 @YES 的字典
     };
 ```
+
 如此，可由整个表单 GSForm发起整体校验，做遍历处理，举例如下：
 
 ```Objective-C
@@ -500,8 +520,8 @@ self.result = result;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     };
 ```
-- 此外也有许多其他方案可供学习：
 
+- 此外也有许多其他方案可供学习：
 
 1. 最常提及的 [XLForm@Github](https://github.com/xmartlabs/XLForm)。
 - [简书J_Knight](http://www.jianshu.com/u/3dd433cb3ea1)前不久的[基于MVVM，用于快速搭建设置页，个人信息页的框架]。(http://www.jianshu.com/p/1f89513f3fb1)

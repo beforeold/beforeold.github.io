@@ -40,10 +40,12 @@ TargetViewController *targetVC = [[TargetViewController alloc] init]; 
     int numClasses = objc_getClassList(NULL, 0);
 ```
 - 传送门入口的设计，最初是想通过摇一摇来实现从而不影响原有UI的效果，但是不便于模拟器上的使用，所以借鉴了苹果的辅助手势```Assist touch```悬浮球设计，在程序的keyWindow上悬浮一个可以挪动的小球从而在编译进入程序后可以第一时间点击查看控制器列表选择想要跳转的控制器。
-```
+
+```Objective-C
 // 创建悬浮效果
 [[UIDynamicAnimator alloc] initWithReferenceView:self.superview];
 ```
+
 # 2 优化
 在使用的过程中逐步衍生并优化了一些有用的功能
 ## 2.1 使用class-prefix

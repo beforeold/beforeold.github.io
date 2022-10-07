@@ -48,11 +48,14 @@ extension MyVC: NSCollectionViewDataSource {
 ```
 ## 1.2 用于泛型参数表示不会发生的情况
 比如在 Result 定义中，可以指定 Failure 为 Never。
-```
+
+```Swift
 let ret: Result<String, Never> = .success("ok")
 ```
+
 这样的 result 不可能失败，因为 Never 是无法实例化，也就无法实例化 failure 的 case。
 此外，编译器也会判断出这个 Never 的 case，不需要去判断 success 即可，failure 可省略
+
 ```Swift
 func foo() {
     switch ret {
@@ -64,8 +67,10 @@ func foo() {
     }
 }
 ```
+
 在 Combine 框架中也可以看到 Never 使用的身影，比如在一些只发送值的 Publisher 就可以指定其 Error 为 Never，同样是无法发送 Never 的 Error。
-```
+
+```Swift
 let subject = PassthroughSubject<Int, Never>()
 subject.send(666)
 ```
@@ -74,6 +79,7 @@ subject.send(666)
 直接使用 fatalError() 即可代码函数的实现，还可以用于：
 ## 2.1 处理确实需要程序必须满足的情况
 要求程序上下文必须满足特定条件才能执行，可触发 fatalError()，比如：
+
 ```Swift
 func importantTask() {
     guard is_valid_user() else {
@@ -118,8 +124,8 @@ Never 的特性在 Combine 中还有不少 extension 的应用，在适当的场
 从 Publisher 的 extension 对比可见一斑：
 - 1、通用方法，要求处理 completion 中潜在的 error
 - 2、error 为 Never，可以不考虑 error
-```Swift
 
+```Swift
 // case 1
 extension Publisher {
     public func sink(receiveCompletion: @escaping ((Subscribers.Completion<Self.Failure>) -> Void),

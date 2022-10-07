@@ -12,6 +12,7 @@ tags:
 
 #### 1、声明的 ```delegate``` 属性不总是 ```weak``` 策略
 委托 ```delegation``` 是 ```iOS``` 开发的常用设计模式，为了避免对象与其代理之间的因为相互 retain 导致循环引用的发生，```delegate``` 属性在如今的 ```ARC``` 时代通常声明为 ```weak``` 策略，然而在早期的手动管理内存的时代，还未引入 ```strong/weak``` 关键字，使用 ```assign``` 策略保证 ```delegate``` 的引用计数不增加， 在 ```Swift``` 中是 ```unowned(unsafe)```， ```UIApplication``` 的 ```delegate``` 声明如下：
+
 ```Objective-C
 // OC
 @property(nullable, nonatomic, assign) id<UIApplicationDelegate> delegate;
@@ -42,6 +43,7 @@ unowned(unsafe) open var delegate: UIApplicationDelegate?
 
 @end
 ```
+
 除了 ```assgin``` 的情况，还有一些情况下 ```delegate``` 是被对象强引用 ```retain``` 的，比如 ```NSURLSession```，```delegate``` 将被 ```retain``` 到 ```session``` 对象失效为止。
 
 ```Objective-C

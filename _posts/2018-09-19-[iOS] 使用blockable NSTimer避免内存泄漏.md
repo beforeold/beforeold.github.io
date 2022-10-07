@@ -44,17 +44,21 @@ Swift:
 
 也就是说，如果是在主线程，即便调用 timer 的对象（target）没有对 timer 进行强引用（比如说使用了 weak 弱引用），因为 NSRunloop -> NSTimer -> target，而导致 target 无法释放，除非为 target 独立设计一个 stopTimer 的方法。
 OC:
+
 ```Objective-C
 - (void)stopTimer {
     [_timer invalidate];
 }
 ```
+
 Swift：
-```
+
+```Swift
 func stopTimer() {
-      timer.invalidate()
+    timer.invalidate()
 }
 ```
+
 如果单单在 dealloc/deinit 处执行撤销 Timer 的操作无法达到预期效果，因为 target 被强引用不会调用销毁/析构的方法。
 OC:
 ```Objective-C
@@ -137,6 +141,7 @@ extension Timer {
 
 - 此时则需要注意不能让 block 强引用了调用者，应该在 block 内使用调用着的 weak 引用，否则仍然会造成内存泄漏， Runloop -> Timer -> UserInfo(block) -> sender。
 OC:
+
 ```Objective-C
     __weak typeof(self) weakSelf = self;
     self.timer = [NSTimer gs_scheduledTimerWithTimeInterval:3 
@@ -157,6 +162,7 @@ OC:
 ```
 
 Swift:
+
 ```Swift
 timer = Timer.gsx_scheduledTimer(withTimeInterval: 3, 
                                 repeats: true, 
