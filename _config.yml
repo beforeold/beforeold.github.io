@@ -13,10 +13,10 @@ future: true
 
 # SNS settings
 RSS: false
-weibo_username: 席萍萍Brook
+#weibo_username: 席萍萍Brook
 #zhihu_username: xxx
 github_username: beforeold
-wechat_username: beforeold
+#weixin_username: beforeold
 #twitter_username: xxx
 #facebook_username:  xxx
 #linkedin_username:  firstname-lastname-idxxxx
