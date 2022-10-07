@@ -3,7 +3,7 @@ title: beforeold blog
 SEOTitle: beforeold 博客 | beforeold blog
 header-img: img/home-bg.jpg
 email: ibeforeold@gmail.com
-description: "这里是 beforeold 的个人博客，与你一起发现更大的世界 | 要做一个有 swag 的程序员"
+description: "这里是 beforeold 的个人博客，与你一起发现更大的世界 | 要做一个有追求的程序员"
 keyword: "beforeold, 博客, 个人网站, 互联网, Web, JavaScript, React, React Native, 前端, 设计"
 url: "https://beforeold.github.io" # your host, for absolute URL
 baseurl: "" # for example, '/blog' if your blog hosted on 'host/blog'
@@ -75,7 +75,7 @@ ga_domain: huangxuan.me
 
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
-sidebar-about-description: "要做一个有 swag 的程序员 <br> React Team @ Meta"
+sidebar-about-description: "要做一个有追求的程序员 <br> Mobile Team @ Lazada"
 sidebar-avatar: https://github.com/beforeold.png # use absolute URL, seeing it's used in both `/` and `/about/`
 
 # Featured Tags
