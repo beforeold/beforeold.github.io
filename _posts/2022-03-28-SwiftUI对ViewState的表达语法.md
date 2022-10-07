@@ -59,7 +59,6 @@ extension ViewState: View {
 ## 方案一：AnyView 的使用
 使用 AnyView 类型，这就满足了那篇文章中的 ContainerView 的需求，即每一个返回的地方都使用 AnyView 进行包裹。
 ```Swift
-
 func createAnyView<T>(_ value: T) -> AnyView {
     return AnyView(Text("value"))
 }
@@ -111,10 +110,8 @@ extension ViewState: View {
 
 ```
 而 body 的实际类型，不是某一个分支的 view，而是一个组合后的类型，通过打印得知如下：
-```
-
+```Swift
 _ConditionalContent<_ConditionalContent<_ConditionalContent<Button<Text>, Text>, ProgressView<EmptyView, EmptyView>>, EmptyView>
-
 ```
 
 不过这样以来， VIewState 就包含了 View 的信息，不符合架构上的职责隔离，ViewState 不负责 BuilderWidget 更合适，可以抽象一个新的结构进行 view 的构造，例如：
